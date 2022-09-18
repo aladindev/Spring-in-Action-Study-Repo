@@ -1,6 +1,11 @@
 package tacos;
 
 import javax.validation.constraints.Digits;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.CreditCardNumber;
@@ -10,6 +15,14 @@ import lombok.Data;
 @Data
 public class Order {
 	
+	private Long id;
+	private Date placedAt;
+	
+	/**
+	 * 유효성 검증을 지정한다 이후 컨트롤러 매개변수 앞에 @Valid 애노테이션을 추가하여
+	 * 선언한 도메인안의 지정된 유효성을 검증한 뒤 어긋난 유효성이 있다면
+	 * Errors 객체에 내용을 전달한다.
+	 * */
 	@NotBlank
 	private String deliveryName;
 	
@@ -34,4 +47,10 @@ public class Order {
 	
 	@Digits(integer=3, fraction=0, message="Invalid CVV")
 	private String ccCVV;
+	
+	private List<Taco> tacos = new ArrayList<>();
+	
+	public void addDesign(Taco design) {
+		this.tacos.add(design);
+	}
 }
