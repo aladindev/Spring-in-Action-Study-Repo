@@ -3,12 +3,15 @@ package tacos.security;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -17,17 +20,36 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	DataSource dataSource;
 	
+	@Autowired
+	private UserDetailsService userDetailsService;
+	
+	@Bean
+	public PasswordEncoder encoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+	/**
+	 *  HTTP 요청 처리를 허용하기 전에 충족되어야 할 특정 보안 조건을 구성한다.
+	 *  커스텀 로그인 페이지를 구성한다.
+	 *  사용자가 애플리케이션의 로그아웃을 할 수 있도록 한다.
+	 *  CSRF공격으로부터 보호하도록 구성한다. 
+	 * */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
 		http
 		   .authorizeRequests()
-		    .antMatchers("/design", "/orders") //Security 적용할 경로 매
-		     .access("hasRole('ROLE_USER')")
-		    .antMatchers("/", "/**")
-		     .access("permitAll")
+		   .antMatchers("/design", "/orders") //Security 적용할 경로 매
+		   .access("hasRole('ROLE_USER')") //SpEL(Spring Expression Language)
+		   .antMatchers("/", "/**").access("permitAll")
 		   .and()
-		    .httpBasic();
+		   .formLogin() // 커스텀 로그인 페이지 경로 지정하기 
+		   .loginPage("/login")
+		   .defaultSuccessUrl("/design", true)
+		   .and()
+		   .logout()
+		   .logoutSuccessUrl("/")
+		   ;
 		
 	}
 	
@@ -76,22 +98,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //		  //.passwordEncoder(new BCryptPasswordEncoder());
 //		  .passwordEncoder(new NoEncodingPasswordEncoder());
 		
-		//LDAP : Lightweight Directory Access Protocl
-		auth 
-		  .ldapAuthentication()
-		  .userSearchBase("ou=people")
-		  .userSearchFilter("(uid={0})")
-		  .groupSearchBase("ou=groups")
-		  .groupSearchFilter("memeber={0}")
-		  .contextSource()
-		  .root("dc=tacocloud,dc=com")
-		  .ldif("classpath:users.ldif") //LDIF : LDAP DATA INTERCHANGE FORMAT
-		  .and()
-		  .passwordCompare()
-		  .passwordEncoder(new BCryptPasswordEncoder())
-		  .passwordAttribute("userPasscode")
-		  .and()
-		  ;
 		
+		//LDAP : Lightweight Directory Access Protocl
+//		auth 
+//		  .ldapAuthentication()
+//		  .userSearchBase("ou=people")
+//		  .userSearchFilter("(uid={0})")
+//		  .groupSearchBase("ou=groups")
+//		  .groupSearchFilter("memeber={0}")
+//		  .contextSource()
+//		  .root("dc=tacocloud,dc=com")
+//		  .ldif("classpath:users.ldif") //LDIF : LDAP DATA INTERCHANGE FORMAT
+//		  .and()
+//		  .passwordCompare()
+//		  .passwordEncoder(new BCryptPasswordEncoder())
+//		  .passwordAttribute("userPasscode")
+//		  .and()
+//		  ;
+		
+		//H2 관계형 데이터베이스
+		auth
+		 .userDetailsService(userDetailsService)
+		 .passwordEncoder(encoder());
 	}
 }
