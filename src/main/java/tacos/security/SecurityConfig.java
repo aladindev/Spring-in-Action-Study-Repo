@@ -52,29 +52,46 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //		      .password("{noop}password2") // {noop}은 테스트용으로 암호화 미진행 
 //		      .authorities("ROLE_USER");
 		
+		
 		//JDBC 기반 관계형 데이터베이스 유지 및 관리 방식
+//		auth 
+//		  .jdbcAuthentication()
+//		  .dataSource(dataSource)
+//		  .usersByUsernameQuery(
+//				  "select username, password, enabled from users " + 
+//				  "where username = ?")
+//		  .authoritiesByUsernameQuery(
+//				  "select username, authority from authorities " + 
+//				  "where username = ?")
+//		  /**
+//		   * passwordEncoder()는 스프링 시큐리티의 PasswordEncoder 인터페이스를 구현한
+//		   * 어떤 체도 인자로 받을 수 있다. 
+//		   * 
+//		   * BCryptPasswordEncoder : bcrypt를 해싱 암호화한다.
+//		   * NoOpPasswordEncoder : 암호화하지 않는다. 
+//		   * Pdkdf2PasswordEncoder : PBKDF2를 암호화한다. 
+//		   * SCryptPasswordEncoder : scrypt를 해싱 암호화한다.
+//		   * StandardPasswordEncoder : SHA-256를 해싱 암호화한다. 
+//		   */
+//		  //.passwordEncoder(new BCryptPasswordEncoder());
+//		  .passwordEncoder(new NoEncodingPasswordEncoder());
+		
+		//LDAP : Lightweight Directory Access Protocl
 		auth 
-		  .jdbcAuthentication()
-		  .dataSource(dataSource)
-		  .usersByUsernameQuery(
-				  "select username, password, enabled from users " + 
-				  "where username = ?")
-		  .authoritiesByUsernameQuery(
-				  "select username, authority from authorities " + 
-				  "where username = ?")
-		  /**
-		   * passwordEncoder()는 스프링 시큐리티의 PasswordEncoder 인터페이스를 구현한
-		   * 어떤 체도 인자로 받을 수 있다. 
-		   * 
-		   * BCryptPasswordEncoder : bcrypt를 해싱 암호화한다.
-		   * NoOpPasswordEncoder : 암호화하지 않는다. 
-		   * Pdkdf2PasswordEncoder : PBKDF2를 암호화한다. 
-		   * SCryptPasswordEncoder : scrypt를 해싱 암호화한다.
-		   * StandardPasswordEncoder : SHA-256를 해싱 암호화한다. 
-		   */
-		  .passwordEncoder(new BCryptPasswordEncoder());
+		  .ldapAuthentication()
+		  .userSearchBase("ou=people")
+		  .userSearchFilter("(uid={0})")
+		  .groupSearchBase("ou=groups")
+		  .groupSearchFilter("memeber={0}")
+		  .contextSource()
+		  .root("dc=tacocloud,dc=com")
+		  .ldif("classpath:users.ldif") //LDIF : LDAP DATA INTERCHANGE FORMAT
+		  .and()
+		  .passwordCompare()
+		  .passwordEncoder(new BCryptPasswordEncoder())
+		  .passwordAttribute("userPasscode")
+		  .and()
+		  ;
+		
 	}
-
-	
-
 }
