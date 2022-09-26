@@ -27,6 +27,13 @@ import tacos.data.IngredientRepository;
 import tacos.data.TacoRepository;
 import tacos.data.UserRepository;
 
+
+/**
+ *  @Controller : 뷰로 보여줄 값을 Model객체에 담아 객체를 반환하는 컨트롤러 
+ *  @RestController : 컨트롤러의 모든 HTTP요청 처리 메서드에서 HTTP 응답 몸체에
+ *                    직접 쓰는 값을 반환한다.
+ * */
+
 @Slf4j
 @Controller
 @RequestMapping("/design")

@@ -1,6 +1,7 @@
 package tacos.data;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import tacos.Taco;
 
@@ -9,7 +10,8 @@ import tacos.Taco;
  * 제너릭 첫 번째 인자는 레포지토리에 저장되는 Entity 개체 타입이며 
  * 두 번째 매개변수는 Entity의 ID(KEY) 속성의 타입이다.
  */
-public interface TacoRepository extends CrudRepository<Taco, Long> {
+public interface TacoRepository extends CrudRepository<Taco, Long>
+										, PagingAndSortingRepository<Taco, Long>{
 	
 
 }
