@@ -2,8 +2,12 @@ package tacos.web;
 
 import javax.validation.Valid;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,12 +25,38 @@ import tacos.data.OrderRepository;
 @Controller
 @RequestMapping("/orders")
 @SessionAttributes("order")
+/**
+ * 스프링 자동 구성-속성을 사용할 수 있도록 하는 애노테이션
+ * 자동 구성 속성은 application.yml 파일에 정의되어 있다.
+ * 들여쓰기 단위로 간다. 
+ */
+//@ConfigurationProperties(prefix="taco.orders") 
 public class OrderController {
+	
+//	private int pageSize = 20;
+//	public void setPageSize(int pageSize) {
+//		this.pageSize = pageSize;
+//	}
+	private OrderProps props;
 	
 	private OrderRepository orderRepo;
 	
-	public OrderController(OrderRepository orderRepo) {
+	public OrderController(OrderRepository orderRepo
+			 			  //, @Valid OrderProps props
+							, OrderProps props	
+			 			  ) {
 		this.orderRepo = orderRepo;
+		this.props = props;
+	}
+	
+	@GetMapping
+	public String ordersForUser(@AuthenticationPrincipal User user, Model model) {
+		
+		//Pageable pageable = PageRequest.of(0,  pageSize);
+		Pageable pageable = PageRequest.of(0,  props.getPageSize());
+		model.addAttribute("orders", orderRepo.findByUserOrderByPlacedAtDesc(user, pageable));
+		
+		return "orderList";
 	}
 	
 	@GetMapping("/current")
