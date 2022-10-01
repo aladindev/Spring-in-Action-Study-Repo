@@ -3,19 +3,23 @@ package tacos.web;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 import tacos.Ingredient;
@@ -35,9 +39,10 @@ import tacos.data.UserRepository;
  * */
 
 @Slf4j
-@Controller
-@RequestMapping("/design")
-@SessionAttributes("order") //세션에 order 객체를 담는다.
+@RestController
+@RequestMapping(path="/design", produces="application/json")
+@CrossOrigin(origins="*")
+//@SessionAttributes("order") //세션에 order 객체를 담는다.
 public class DesignTacoController {
 	
 	private final IngredientRepository ingredientRepo;
@@ -101,6 +106,16 @@ public class DesignTacoController {
 		order.addDesign(saved);
 		
 		return "redirect:/orders/current";
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<Taco> tacoById(@PathVariable("id")Long id) {
+		Optional<Taco> optTaco = tacoRepo.findById(id);
+		
+		if(optTaco.isPresent()) {
+			return new ResponseEntity<>(optTaco.get(), HttpStatus.OK);
+		}
+		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 	}
 	
 }
