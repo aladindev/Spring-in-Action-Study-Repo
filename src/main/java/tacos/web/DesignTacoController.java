@@ -9,6 +9,11 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.WebProperties.Resources;
+import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -41,13 +46,16 @@ import tacos.data.UserRepository;
 @Slf4j
 @RestController
 @RequestMapping(path="/design", produces="application/json")
-@CrossOrigin(origins="*")
+@CrossOrigin(origins="*") // 서로 다른 도메인 간의 요청을 허용한다.
 //@SessionAttributes("order") //세션에 order 객체를 담는다.
 public class DesignTacoController {
 	
 	private final IngredientRepository ingredientRepo;
 	private TacoRepository tacoRepo;
 	private UserRepository userRepo;
+	
+	@Autowired
+	EntityLinks eneityLinks;
 	
 	@Autowired
 	public DesignTacoController(IngredientRepository ingredientRepo
@@ -108,7 +116,7 @@ public class DesignTacoController {
 		return "redirect:/orders/current";
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping("/{id}") //메서드의 경로에 플레이스홀더 변수 지정하여 해당 변수르 통해 ID를 인자로 받는다.
 	public ResponseEntity<Taco> tacoById(@PathVariable("id")Long id) {
 		Optional<Taco> optTaco = tacoRepo.findById(id);
 		
@@ -118,4 +126,11 @@ public class DesignTacoController {
 		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 	}
 	
+	@GetMapping("/recent")
+	public Iterable<Taco> recentTacos() {
+		PageRequest page = PageRequest.of(0,  12, Sort.by("createdAt").descending());
+		
+		return tacoRepo.findAll(page).getContent();
+		
+	}
 }
