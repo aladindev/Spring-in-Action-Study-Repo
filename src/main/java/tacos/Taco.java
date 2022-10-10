@@ -14,7 +14,7 @@ import java.util.Date;
 
 @Data
 @Entity
-public class Taco {
+public class Taco { 
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
