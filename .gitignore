@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+.DS_Store
+Ch06/
+src/.DS_Store
+src/main/.DS_Store
+src/main/java/.DS_Store
+src/main/java/tacos/.DS_Store
