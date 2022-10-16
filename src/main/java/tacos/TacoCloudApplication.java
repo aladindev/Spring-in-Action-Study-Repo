@@ -1,13 +1,13 @@
 package tacos;
 
-import java.net.URI;
+import javax.jms.Destination;
 
+import org.apache.activemq.artemis.jms.client.ActiveMQQueue;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.client.Traverson;
+import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import tacos.Ingredient.Type;
@@ -20,12 +20,26 @@ public class TacoCloudApplication {
 		SpringApplication.run(TacoCloudApplication.class, args);
 	}
 
+	// 메세지 변환기
+	@Bean
+	public MappingJackson2MessageConverter messageConverter() {
+		MappingJackson2MessageConverter messageConverter =
+								new MappingJackson2MessageConverter();
+		messageConverter.setTypeIdPropertyName("_typeId");
+		
+		return messageConverter;
+	}
+	
 	@Bean
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
 	
-
+	@Bean
+	public Destination orderQueue() {
+		return new ActiveMQQueue("tacocloud.order.queue");
+	}
+	
 	@Bean
 	public CommandLineRunner dataLoader(IngredientRepository repo) {
 		return new CommandLineRunner() {

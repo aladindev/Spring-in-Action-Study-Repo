@@ -6,3 +6,8 @@ taco:
 logging:
   level:
     tacos: DEBUG
+
+spring:
+  jms:
+    template:
+      default-destination: tacocloud.order.queue
