@@ -8,6 +8,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.client.Traverson;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,6 +25,15 @@ public class TacoCloudClient {
 	 * */
 	@Autowired
 	private RestTemplate rest;
+	
+	/**
+	 * 스프링 JMS 통합 비동기 메세징 처리 라이브러리
+	 * send() : 원시 메시지 전송  
+	 * convertAndSend() : 객체로부터 변환된 메시지를 전송한다.
+	 *   >전송에 앞서 후처리(post-processing)되는 메시지를 전송할 수 있다.
+	 * */
+	@Autowired
+	private JmsTemplate jmsTemplate;
 
 	// Resource Get
 	public Ingredient getIngredientById(String ingredientId) {
