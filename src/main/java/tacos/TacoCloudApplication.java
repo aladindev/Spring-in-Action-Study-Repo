@@ -1,9 +1,13 @@
 package tacos;
 
+import java.net.URI;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.client.Traverson;
 import org.springframework.web.client.RestTemplate;
 
 import tacos.Ingredient.Type;
@@ -20,6 +24,7 @@ public class TacoCloudApplication {
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
+	
 
 	@Bean
 	public CommandLineRunner dataLoader(IngredientRepository repo) {

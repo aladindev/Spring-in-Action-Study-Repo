@@ -3,6 +3,10 @@ package tacos;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.WebProperties.Resources;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.client.Traverson;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -109,5 +113,21 @@ public class TacoCloudClient {
 		log.info("New Resource created at : " + responseEntity.getHeaders().getLocation());
 		
 		return responseEntity.getBody();
+	}
+	
+	/*
+	 *  스프링 데이터 HATEOAS에서 같이 제공되는 Traverson REST API 
+	 *  하이퍼 미디어 API를 사용할 수 있다.
+	 * */
+	public void traversonFunc() {
+		
+		//Traverson을 사용할 때는 API의 기본 URI를 갖는 객체를 생성해야 한다.
+		Traverson traverson = new Traverson(URI.create("http://localhost:8080/api")
+											, MediaTypes.HAL_JSON);
+				
+		// 하이퍼링크를 추적하며 API사용
+		ParameterizedTypeReference<Resources> ingredientType =
+				new ParameterizedTypeReference<Resources>() {}; 
+				
 	}
 }
