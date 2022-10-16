@@ -1,5 +1,8 @@
 package tacos;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.jms.Destination;
 
 import org.apache.activemq.artemis.jms.client.ActiveMQQueue;
@@ -26,6 +29,9 @@ public class TacoCloudApplication {
 		MappingJackson2MessageConverter messageConverter =
 								new MappingJackson2MessageConverter();
 		messageConverter.setTypeIdPropertyName("_typeId");
+		
+		Map<String, Class<?>> typeIdMappings = new HashMap<String, Class<?>>();
+		typeIdMappings.put("order", Order.class);
 		
 		return messageConverter;
 	}
