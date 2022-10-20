@@ -42,8 +42,12 @@ public class JmsOrderReceiver implements OrderReceiver {
 
 	private JmsTemplate jms;
 	
+	
+	/* MessageConverter를 주입할 필요가 없다. 모든 메시지 변환은 내부적으로 
+	 * receiveAndConvert()에서 수행되기 때문이다. 
+	 * */
 	@Autowired
-	public JmsOrderReceiver(JmsTemplate jms, MessageConverter converter) {
+	public JmsOrderReceiver(JmsTemplate jms) {
 		this.jms = jms;
 	}
 
