@@ -16,6 +16,9 @@ public class RabbitOrderListener {
 		this.ui = ui;
 	}
 	
+	/*
+	 * 메세지가 큐에 도착할 때 메서드가 자동 호출되도록 지정하는 어노테이
+	 * */
 	@RabbitListener(queues = "tacocloud.order.queue")
 	public void receiveOrder(Order order) {
 		ui.displayOrder(order);
