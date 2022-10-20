@@ -16,3 +16,4 @@ spring:
     template:
       exchange: tacocloude.orders
       routing-key: kitchens.centrl
+      receive-timeout: 30000

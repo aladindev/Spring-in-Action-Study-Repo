@@ -12,12 +12,12 @@ import tacos.Order;
  * 메시지 리스너는 메세지가 도착할 때까지 대기하는 수동적 컴포넌트다.
  * */
 @Component
-public class OrderListener {
+public class JmsOrderListener {
 	
 	private KitchenUI ui;
 	
 	@Autowired
-	public OrderListener(KitchenUI ui) {
+	public JmsOrderListener(KitchenUI ui) {
 		this.ui = ui;
 	}
 
