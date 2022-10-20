@@ -1,4 +1,4 @@
-package tacos.kitchen;
+package tacos.messagingJms;
 
 import org.springframework.stereotype.Component;
 

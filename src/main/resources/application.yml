@@ -7,7 +7,12 @@ logging:
   level:
     tacos: DEBUG
 
+#spring properties
 spring:
   jms:
     template:
       default-destination: tacocloud.order.queue
+  rabbitmq:
+    template:
+      exchange: tacocloude.orders
+      routing-key: kitchens.centrl
