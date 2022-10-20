@@ -1,6 +1,8 @@
 package taco.messaging.RabbitMQ;
 
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.MessageConverter;
@@ -39,13 +41,32 @@ public class RabbitOrderMessagingService implements OrderMessagingService {
 		// 객체를 Message객체로 변환해주는 RabbitMQ 내장 메소드 
 		MessageConverter converter = rabbit.getMessageConverter();
 		MessageProperties props = new MessageProperties();
+		
+		/* 프로퍼티 헤더 설정 */
+		props.setHeader("X_ORDER_SOURCE", "WEB");
 		Message message = converter.toMessage(order, props);
 		
 		/*
 		 * 프로퍼티에 기본 거래소를 지정할 수 있다.
 		 * "" 빈 문자열 전송 시, 해당 속성의 기본 거래소로 찾아가게 된다
+		 * (라우팅 키도 속성값으로 지정가능)
 		 * */
 		rabbit.send("tacocloud.order", message);
+		
+		/* convertAndSend()를 사용할 때는 MessageProperties 객체를 직접 
+		* 사용할 수 없다. 다음과 같이 MessagePostProcessor에서 해야 한다.
+		*/
+		rabbit.convertAndSend("tacocloud.order.queue", order
+				, new MessagePostProcessor() {
+			@Override
+			public Message postProcessMessage(Message message) throws AmqpException {
+				MessageProperties props = message.getMessageProperties();
+				props.setHeader("X_ORDER_SOURCE", "WEB");
+				
+				return message;
+			}
+		});
+		
 	}
 
 }

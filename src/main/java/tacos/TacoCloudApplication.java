@@ -6,6 +6,8 @@ import java.util.Map;
 import javax.jms.Destination;
 
 import org.apache.activemq.artemis.jms.client.ActiveMQQueue;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -34,6 +36,12 @@ public class TacoCloudApplication {
 		typeIdMappings.put("order", Order.class);
 		
 		return messageConverter;
+	}
+	
+	/* RabbitMQ Message Converter */
+	@Bean
+	public MessageConverter rabbitMessageConverter() {
+		return new Jackson2JsonMessageConverter();
 	}
 	
 	@Bean
