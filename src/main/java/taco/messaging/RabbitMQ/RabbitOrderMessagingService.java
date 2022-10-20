@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import tacos.Order;
 import tacos.messagingJms.OrderMessagingService;
 
-/* RabbitMQ가 제공하는 메소드 
+/* RabbitMQ가 제공하는 메소드(전송)
  * 추가적인 파라미터가 존재하는 오버로딩 메소드 여러 존재
  * */
 
@@ -26,6 +26,19 @@ import tacos.messagingJms.OrderMessagingService;
 
 // 객체로부터 변환되고 후처리(post-processing)되는 메세지를 전송한다.
 //void convertAndSend(Object message, MessagePostProcessor mPP) throw AmqpException;
+
+/*
+ *  RabbitMQ가 제공하는 메소드(메세지 수신)
+ *  (오버로딩 된 메소드 여러 존재)
+ *  Message receive() throws AmqpException;
+ *  
+ *  메세지로부터 변환된 객체를 수신한다.
+ *  Object receiveAndConvert() throws AmqpException
+ *  
+ *  메세지로부터 변환된 타입-안전(type-safe) 객체를 수신한다.
+ *  <T> T receiveAndConvert(ParameterizedTypeReference<T> type) throw AmqpException
+ * */
+
 
 
 @Service
