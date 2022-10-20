@@ -40,6 +40,11 @@ public class RabbitOrderMessagingService implements OrderMessagingService {
 		MessageConverter converter = rabbit.getMessageConverter();
 		MessageProperties props = new MessageProperties();
 		Message message = converter.toMessage(order, props);
+		
+		/*
+		 * 프로퍼티에 기본 거래소를 지정할 수 있다.
+		 * "" 빈 문자열 전송 시, 해당 속성의 기본 거래소로 찾아가게 된다
+		 * */
 		rabbit.send("tacocloud.order", message);
 	}
 
