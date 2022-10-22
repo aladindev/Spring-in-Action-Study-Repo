@@ -95,5 +95,22 @@ public class FluxMergingTests {
 	          .expectNext("Barbossa eats Apples")
 	          .verifyComplete();
 	  }
-
+	
+	/* 먼저 값을 방출하는 리액티브 타입 선택하기 */
+	  @Test
+	  public void firstFlux() {
+	    // delay needed to "slow down" the slow Flux
+	    
+	    Flux<String> slowFlux = Flux.just("tortoise", "snail", "sloth")
+	          .delaySubscription(Duration.ofMillis(100));
+	    Flux<String> fastFlux = Flux.just("hare", "cheetah", "squirrel");
+	    
+	    Flux<String> firstFlux = Flux.first(slowFlux, fastFlux);
+	    
+	    StepVerifier.create(firstFlux)
+	        .expectNext("hare")
+	        .expectNext("cheetah")
+	        .expectNext("squirrel")
+	        .verifyComplete();
+	  }
 }
