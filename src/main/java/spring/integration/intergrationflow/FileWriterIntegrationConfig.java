@@ -1,20 +1,63 @@
-package spring.intergration.intergrationflow;
+package spring.integration.intergrationflow;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.Poller;
+import org.springframework.integration.annotation.Router;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.annotation.Transformer;
+import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.file.FileWritingMessageHandler;
 import org.springframework.integration.file.support.FileExistsMode;
+import org.springframework.integration.router.AbstractMessageRouter;
 import org.springframework.integration.transformer.GenericTransformer;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+
+import spring.integration.filter.EvenNumberFilter;
 
 @Configuration
 public class FileWriterIntegrationConfig {
+	
+	@Autowired
+	EvenNumberFilter evenNumberFilter;
+	
+	
+	//Router : 전달 조건을 기반으로 통합 플로우 내부를 분기(서로 다른 채널로 메세지를 전달)한다.
+	@Bean
+	@Router(inputChannel="numberChannel") // 정수값을 전달하는 채널
+	public AbstractMessageRouter evenOddRouter() {
+		return new AbstractMessageRouter() {
+			@Override
+			protected Collection<MessageChannel> determineTargetChannels(Message<?> message) {
+				Integer number = (Integer)message.getPayload();
+				
+				if(number % 2 == 0) {
+					return Collections.singleton(evenChannel());
+				}
+				return Collections.singleton(oddChannel());
+			}
+		};
+	}
+	
+	@Bean
+	public MessageChannel evenChannel() {
+		return new DirectChannel();
+	}
+	
+	@Bean
+	public MessageChannel oddChannel() {
+		return new DirectChannel();
+	}
+	
+	//Router : 전달 조건을 기반으로 통합 플로우 내부를 분기(서로 다른 채널로 메세지를 전달)한다.
+	
 	
 	// 별도의 채널 지정
 	@Bean

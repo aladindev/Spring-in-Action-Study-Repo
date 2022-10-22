@@ -1,4 +1,4 @@
-package spring.intergration.filter;
+package spring.integration.filter;
 
 import org.springframework.integration.annotation.Filter;
 import org.springframework.stereotype.Component;

@@ -23,4 +23,10 @@ spring:
       bootstrap-servers:
       - kafaka.tacocloud.com:9092
 
-    
+tacocloud:
+  eamil:
+    host: imap.tacocloud.com
+    mailbox: INBOX
+    username: taco-in-flow
+    password: 1LOv3T4cOs
+    poll-rate: 10000

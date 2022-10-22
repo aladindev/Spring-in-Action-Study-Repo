@@ -1,4 +1,4 @@
-package spring.intergration.gateway;
+package spring.integration.gateway;
 
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.file.FileHeaders;
