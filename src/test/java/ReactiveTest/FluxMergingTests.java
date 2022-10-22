@@ -60,6 +60,9 @@ public class FluxMergingTests {
 	    Flux<String> foodFlux = Flux
 	        .just("Lasagna", "Lollipops", "Apples");
 	    
+	    /*
+	     * Tuple2 : 두 개의 다른 객체를 전달하는 컨테이너 객체이며, 조합된 새로운 객체를 반환한다.
+	     */
 	    Flux<Tuple2<String, String>> zippedFlux = 
 	        Flux.zip(characterFlux, foodFlux);
 	    
@@ -73,6 +76,23 @@ public class FluxMergingTests {
 	          .expectNextMatches(p -> 
 	              p.getT1().equals("Barbossa") && 
 	              p.getT2().equals("Apples"))
+	          .verifyComplete();
+	  }
+	
+	@Test
+	  public void zipFluxesToObject() {
+	    Flux<String> characterFlux = Flux
+	        .just("Garfield", "Kojak", "Barbossa");
+	    Flux<String> foodFlux = Flux
+	        .just("Lasagna", "Lollipops", "Apples");
+	    
+	    Flux<String> zippedFlux = 
+	        Flux.zip(characterFlux, foodFlux, (c, f) -> c + " eats " + f);
+	    
+	    StepVerifier.create(zippedFlux)
+	          .expectNext("Garfield eats Lasagna")
+	          .expectNext("Kojak eats Lollipops")
+	          .expectNext("Barbossa eats Apples")
 	          .verifyComplete();
 	  }
 
