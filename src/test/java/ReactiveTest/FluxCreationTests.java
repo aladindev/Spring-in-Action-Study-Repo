@@ -1,5 +1,7 @@
 package ReactiveTest;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.Test;
 
 import reactor.core.publisher.Flux;
@@ -65,8 +67,25 @@ public class FluxCreationTests {
 					.expectNext(3)
 					.expectNext(4)
 					.expectNext(5)
+					.verifyComplete();
 					;
 			
+	}
+	
+	@Test
+	/* range()와 유사한 또 다른 Flux 생성 메서드인 interval() 
+	 * range()와는 다르게 시작 값과 종료 값 대신 값이 방출되는 시간이나 간격 주기를 보여준다. */
+	public void createAFlux_interval() {
+		Flux<Long> intervalFlux = Flux.interval(Duration.ofSeconds(1)).take(5);
+		//take() : 항목의 개수 제한 
+		
+		StepVerifier.create(intervalFlux)
+				.expectNext(0L)
+				.expectNext(1L)
+				.expectNext(2L)
+				.expectNext(3L)
+				.expectNext(4L)
+				.verifyComplete();
 	}
 
 }
