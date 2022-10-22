@@ -74,4 +74,33 @@ public class FluxTransformingTests {
 	        .expectNext("Yellowstone", "Yosemite", "Zion")
 	        .verifyComplete();
 	  }
+	
+	/* distinct() operation : 발행된 적이 없는(중복되지 않는) 소스 Flux의 항목만 발행한다. */
+	@Test
+	  public void distinct() {
+	    Flux<String> animalFlux = Flux.just(
+	        "dog", "cat", "bird", "dog", "bird", "anteater")
+	        .distinct();
+	   
+	    StepVerifier.create(animalFlux)
+	        .expectNext("dog", "cat", "bird", "anteater")
+	        .verifyComplete();
+	  }
+	
+	/* 리액티브 데이터 매핑하기 */
+//	  @Test
+//	  public void map() {
+//	    Flux<Player> playerFlux = Flux
+//	      .just("Michael Jordan", "Scottie Pippen", "Steve Kerr")
+//	      .map(n -> {
+//	        String[] split = n.split("\\s");
+//	        return new Player(split[0], split[1]);
+//	      });
+//	    
+//	    StepVerifier.create(playerFlux)
+//	        .expectNext(new Player("Michael", "Jordan"))
+//	        .expectNext(new Player("Scottie", "Pippen"))
+//	        .expectNext(new Player("Steve", "Kerr"))
+//	        .verifyComplete();
+//	  }
 }
