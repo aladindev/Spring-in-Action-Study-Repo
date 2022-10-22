@@ -105,6 +105,16 @@
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
+		<!-- spring integration : 통합하려는 플로우와 무관하게 스프링 통합 플로우 개발 시 반드시 추가해야 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-integration</artifactId>
+		</dependency>
+		<!-- 파일을 읽거나 쓰는 채널 어댑터 -->
+		<dependency>
+			<groupId>org.springframework.integration</groupId>
+			<artifactId>spring-integration-file</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -122,5 +132,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
