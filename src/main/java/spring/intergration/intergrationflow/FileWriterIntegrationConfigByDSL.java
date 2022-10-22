@@ -2,6 +2,7 @@ package spring.intergration.intergrationflow;
 
 import java.io.File;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.dsl.IntegrationFlow;
@@ -10,8 +11,13 @@ import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.integration.file.dsl.Files;
 import org.springframework.integration.file.support.FileExistsMode;
 
+import spring.intergration.filter.EvenNumberFilter;
+
 @Configuration
 public class FileWriterIntegrationConfigByDSL {
+	
+	@Autowired
+	EvenNumberFilter evenNumberFilter;
 	
 	/*
 	 * 자바 DSL : Domain Specific Language 구성 방법
@@ -26,6 +32,7 @@ public class FileWriterIntegrationConfigByDSL {
 				.<String, String>transform(t -> t.toUpperCase()) //변환기를 선언한다.
 				//변환기를 아웃바운드 채널 어댑터와 연결하는 채널을 명시한다.
 				.channel(MessageChannels.direct("fileWriterChannel")) 
+				.<Integer>filter((p) -> p % 2 == 0) // 메세지 전달 조건(필터)
 				.handle(Files //파일에 쓰는 것을 처리한다.
 						.outboundAdapter(new File("/tmp/sia5/files"))
 						.fileExistsMode(FileExistsMode.APPEND)
