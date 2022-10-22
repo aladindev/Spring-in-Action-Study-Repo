@@ -21,12 +21,16 @@ public class FileWriterIntegrationConfig {
 	}
 	
 	@Bean
-	@ServiceActivator(inputChannel="fileWriterChannel")
+	/*
+	 * @ServiceActivator : fileWriterChannel로부터 메세지를 받아서 
+	 * FileWritingMessageHandler의 인스턴스로 정의된 서비스에 넘겨줌을 나타낸다.
+	 * */
+	@ServiceActivator(inputChannel="fileWriterChannel") 
 	public FileWritingMessageHandler fileWriter() { // 파일-쓰기 빈을 선언한다.
 		FileWritingMessageHandler handler =
 					new FileWritingMessageHandler(new File("/tmp/sia5/files"));
 		
-		handler.setExpectReply(false);
+		handler.setExpectReply(false);//서비스에서 응답 채널을 사용하지 않는다.
 		handler.setFileExistsMode(FileExistsMode.APPEND);
 		handler.setAppendNewLine(true);
 		
