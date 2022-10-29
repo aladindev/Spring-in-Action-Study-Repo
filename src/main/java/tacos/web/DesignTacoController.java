@@ -163,7 +163,12 @@ public class DesignTacoController {
 	@PostMapping(consumes="application/json")
 	@ResponseStatus(HttpStatus.CREATED)
 	public Mono<Taco> postTaco(@RequestBody Mono<Taco> tacoMono) {
-		return tacoRepoWebflux.saveAll(tacoMono).next();
+		/* 
+		 * saveAll()의 반환형은 Flux<?>를 반환한다.(여기서는 Flux<Taco>)
+		 * next()를 호출하여 Mono<Taco>(하나의 Taco 객체만을 포함하는)로 받을 수 있다.
+		 * Flux : 0, 1, 또는 다수의(무한일 수 있는) 데이터를 갖는 파이프라인을 나타낸다.
+		 * */
+		return tacoRepoWebflux.saveAll(tacoMono).next(); 
 	}
 	
 }
