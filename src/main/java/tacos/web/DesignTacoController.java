@@ -3,7 +3,7 @@ package tacos.web;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Observable;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.server.EntityLinks;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import tacos.Ingredient;
 import tacos.Ingredient.Type;
 import tacos.Order;
@@ -117,15 +116,16 @@ public class DesignTacoController {
 		return "redirect:/orders/current";
 	} 
 	
-	@GetMapping("/{id}") //메서드의 경로에 플레이스홀더 변수 지정하여 해당 변수르 통해 ID를 인자로 받는다.
-	public ResponseEntity<Taco> tacoById(@PathVariable("id")Long id) {
-		Optional<Taco> optTaco = tacoRepo.findById(id);
-		
-		if(optTaco.isPresent()) {
-			return new ResponseEntity<>(optTaco.get(), HttpStatus.OK);
-		}
-		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-	}
+//	@GetMapping("/{id}") //메서드의 경로에 플레이스홀더 변수 지정하여 해당 변수르 통해 ID를 인자로 받는다.
+//	public ResponseEntity<Taco> tacoById(@PathVariable("id")Long id) {
+//		Optional<Taco> optTaco = tacoRepo.findById(id);
+//		
+//		if(optTaco.isPresent()) {
+//			return new ResponseEntity<>(optTaco.get(), HttpStatus.OK);
+//		}
+//		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//	}
+	
 	public Iterable<Taco> recentTacos() {
 		PageRequest page = PageRequest.of(0,  12, Sort.by("createdAt").descending());
 		
@@ -141,7 +141,17 @@ public class DesignTacoController {
 		 * 이 스택에는 controller, repository, db, service가 포함된다. 
 		 * 리액티브 웹 프레임워크의 장점을 극대화하려면 완전한 end-to-end 리액티브 스택의 일부가 되어야한다.*/
 		return tacoRepoWebflux.findAll().take(12);
-	
 	}
+	
+	
+	@GetMapping("/{id}")
+	public Mono<Taco> tacoById(@PathVariable("id") Long id) {
+		return tacoRepoWebflux.findById(id);
+	}
+	
+	/* RxJava 타입 사용하기 
+	 * Observable<Taco> / Single<Taco> 타입을 반환할 수도 있다. 
+	 * */
+	
 	
 }
