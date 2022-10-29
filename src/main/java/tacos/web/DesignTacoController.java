@@ -3,7 +3,6 @@ package tacos.web;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.server.EntityLinks;
+import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
@@ -153,5 +155,15 @@ public class DesignTacoController {
 	 * Observable<Taco> / Single<Taco> 타입을 반환할 수도 있다. 
 	 * */
 	
+	/*  
+	 * 기존에는 postTaco() 호출 시 1번 블로킹되고 
+	 * save() 메서드의 블로킹되는 호출이 끝나고 복귀할 수 있었지만
+	 * 리액티브 코드를 적용하여 완전하게 블로킹되지 않는 요청 처리 메서드를 만들 수 있다. 
+	 * */
+	@PostMapping(consumes="application/json")
+	@ResponseStatus(HttpStatus.CREATED)
+	public Mono<Taco> postTaco(@RequestBody Mono<Taco> tacoMono) {
+		return tacoRepoWebflux.saveAll(tacoMono).next();
+	}
 	
 }
