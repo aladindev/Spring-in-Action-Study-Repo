@@ -90,6 +90,12 @@
 			<artifactId>spring-boot-starter-hateoas</artifactId>
 		</dependency>
 		
+		<!-- spring webflux-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		
 		<!-- Active MQ 기반 상향된 아파치 비동기 메세지 전송 라이브러리 Artemis -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
