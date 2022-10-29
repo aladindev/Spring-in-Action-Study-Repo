@@ -9,10 +9,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.WebProperties.Resources;
-import org.springframework.core.io.Resource;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
 import tacos.Ingredient;
 import tacos.Ingredient.Type;
 import tacos.Order;
@@ -126,11 +123,16 @@ public class DesignTacoController {
 		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 	}
 	
+	/* spring webflux 비동기적 이벤트 중심 처리 리액티브 방식 */
 	@GetMapping("/recent")
-	public Iterable<Taco> recentTacos() {
-		PageRequest page = PageRequest.of(0,  12, Sort.by("createdAt").descending());
-		
-		return tacoRepo.findAll(page).getContent();
-		
+	public Flux<Taco> recentTacos() {
+		/* 기존의 iterable 객체를 Flux로 반환 */ 
+		return Flux.fromIterable(tacoRepo.findAll()).take(12); // Flux의 페이징 메소드 take();
 	}
+//	public Iterable<Taco> recentTacos() {
+//		PageRequest page = PageRequest.of(0,  12, Sort.by("createdAt").descending());
+//		
+//		return tacoRepo.findAll(page).getContent();
+//		
+//	}
 }
