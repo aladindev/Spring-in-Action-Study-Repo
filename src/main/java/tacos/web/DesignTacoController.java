@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,7 @@ import tacos.Taco;
 import tacos.User;
 import tacos.data.IngredientRepository;
 import tacos.data.TacoRepository;
+import tacos.data.TacoRepositoryByWebflux;
 import tacos.data.UserRepository;
 
 
@@ -50,6 +53,7 @@ public class DesignTacoController {
 	private final IngredientRepository ingredientRepo;
 	private TacoRepository tacoRepo;
 	private UserRepository userRepo;
+	private TacoRepositoryByWebflux tacoRepoWebflux;
 	
 	@Autowired
 	EntityLinks eneityLinks;
@@ -122,17 +126,22 @@ public class DesignTacoController {
 		}
 		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 	}
+	public Iterable<Taco> recentTacos() {
+		PageRequest page = PageRequest.of(0,  12, Sort.by("createdAt").descending());
+		
+		return tacoRepo.findAll(page).getContent();
+		
+	}
+	
 	
 	/* spring webflux 비동기적 이벤트 중심 처리 리액티브 방식 */
 	@GetMapping("/recent")
-	public Flux<Taco> recentTacos() {
-		/* 기존의 iterable 객체를 Flux로 반환 */ 
-		return Flux.fromIterable(tacoRepo.findAll()).take(12); // Flux의 페이징 메소드 take();
+	public Flux<Taco> recentTacosByReactive() {
+		/* 이상적인 리액티브 컨트롤러에서는 리액티브 end-to-end 스택의 제일 끝에 위치하며 
+		 * 이 스택에는 controller, repository, db, service가 포함된다. 
+		 * 리액티브 웹 프레임워크의 장점을 극대화하려면 완전한 end-to-end 리액티브 스택의 일부가 되어야한다.*/
+		return tacoRepoWebflux.findAll().take(12);
+	
 	}
-//	public Iterable<Taco> recentTacos() {
-//		PageRequest page = PageRequest.of(0,  12, Sort.by("createdAt").descending());
-//		
-//		return tacoRepo.findAll(page).getContent();
-//		
-//	}
+	
 }
