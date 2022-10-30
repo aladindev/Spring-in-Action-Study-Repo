@@ -89,7 +89,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-hateoas</artifactId>
 		</dependency>
-		
+		<!-- cassandra reactive repository -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-cassandra-reactive</artifactId>
+		</dependency>
+		<!-- NoSql db cassandra -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-cassandra</artifactId>
+		</dependency>
 		<!-- spring webflux-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
