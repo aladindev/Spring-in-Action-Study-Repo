@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import tacos.Ingredient.Type;
 import tacos.data.IngredientRepository;
@@ -52,6 +53,11 @@ public class TacoCloudApplication {
 	@Bean
 	public Destination orderQueue() {
 		return new ActiveMQQueue("tacocloud.order.queue");
+	}
+	
+	@Bean
+	public WebClient webClient() {
+		return WebClient.create("http://localhost:8080");
 	}
 	
 	@Bean
